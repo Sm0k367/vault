@@ -13,6 +13,13 @@
     <canvas id="lounge-canvas"></canvas>
     <div id="chroma-leak"></div>
 
+    <div id="video-portal">
+        <div class="monolith-frame">
+            <video id="video-player" playsinline crossorigin="anonymous"></video>
+            <div class="monolith-glow"></div>
+        </div>
+    </div>
+
     <div id="hud">
         <div class="top-row">
             <div class="status-unit">
@@ -41,7 +48,6 @@
     <div class="vignette"></div>
 
     <audio id="audio-player" crossorigin="anonymous"></audio>
-    <video id="video-player" playsinline crossorigin="anonymous" style="display:none;"></video>
 
     <script src="main.js"></script>
 </body>
