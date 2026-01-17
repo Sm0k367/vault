@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DJ SMOKE STREAM // THE VAULT</title>
+    <title>DJ SMOKE STREAM // THE SINGULARITY</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -12,55 +12,57 @@
 
     <canvas id="lounge-canvas"></canvas>
 
-    <div id="video-stage">
-        <div class="cinema-frame">
+    <div id="monolith-container">
+        <div class="monolith-shield">
             <video id="video-player" playsinline crossorigin="anonymous"></video>
-            <div class="ambient-glow"></div>
+            <div class="light-spill"></div>
         </div>
     </div>
 
-    <div id="interactive-hud">
+    <div id="neural-interface">
         
-        <div class="hud-layer top-edge">
-            <div class="brand-unit">
-                <div class="glitch-orb"></div>
-                <div class="brand-meta">
-                    <h1 class="tracking-widest">DJ SMOKE STREAM</h1>
-                    <p class="text-glow">AI LOUNGE // AFTER DARK</p>
+        <nav class="interface-top">
+            <div class="system-id">
+                <div class="core-node"></div>
+                <div class="brand-logotype">
+                    <span class="glitch-text" data-text="SMOKE STREAM">SMOKE STREAM</span>
+                    <p class="sub-label">NEURAL LINK // ACTIVE</p>
                 </div>
             </div>
-            <div class="telemetry-unit">
+            <div class="status-readout">
                 <div id="clock">00:00:00</div>
-                <div class="coord-sync">LAT: 34.0522 // LON: -118.2437</div>
+                <div class="ping-rate">SYNC: 1.002ms</div>
             </div>
-        </div>
+        </nav>
 
-        <div class="hud-layer bottom-edge">
-            <div class="metadata-unit">
-                <div class="bar-visualizer">
-                    <span></span><span></span><span></span><span></span>
+        <div class="interface-center">
+            </div>
+
+        <nav class="interface-bottom">
+            <div class="media-telemetry">
+                <div class="freq-bars">
+                    <span></span><span></span><span></span><span></span><span></span>
                 </div>
-                <div class="track-details">
-                    <span class="label">ENCRYPTED_SIGNAL</span>
-                    <h2 id="track-name">IDLE_STATE</h2>
+                <div class="metadata">
+                    <span class="prefix">ARCHIVE_FILE:</span>
+                    <h2 id="track-name">STANDBY</h2>
                 </div>
             </div>
-            
-            <div class="action-unit">
+
+            <div class="access-portal">
                 <input type="file" id="media-input" accept="audio/*,video/*" hidden>
-                <button id="inject-btn" class="production-btn">
-                    <div class="btn-visuals"></div>
-                    <span class="btn-text">INITIALIZE_INJECTION</span>
+                <button id="inject-btn" class="portal-trigger">
+                    <div class="portal-glow"></div>
+                    <span class="trigger-text">INJECT MEDIA</span>
                 </button>
             </div>
-        </div>
+        </nav>
 
     </div>
 
-    <div class="film-grain"></div>
-    <div class="vignette"></div>
-    <div class="chromatic-glitch"></div>
-
+    <div class="lens-dirt"></div>
+    <div class="chromatic-aberration"></div>
+    
     <audio id="audio-player" crossorigin="anonymous"></audio>
 
     <script src="main.js"></script>
