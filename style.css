@@ -1,116 +1,110 @@
 :root {
-    --hazard-yellow: #f0f214;
-    --neon-blue: #00f2ff;
-    --neon-pink: #ff00d4;
-    --street-black: #050505;
-    --grid-color: rgba(255, 255, 255, 0.05);
+    --neon-cyan: #00f2ff;
+    --neon-magenta: #ff00d4;
+    --dark-void: #020202;
+    --hazard: #f0f214;
 }
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Arial Black', Gadget, sans-serif; /* Heavy, aggressive font */
+    font-family: 'Syncopate', sans-serif;
+    text-transform: uppercase;
 }
 
 body {
-    background: var(--street-black);
+    background: var(--dark-void);
     color: #fff;
     height: 100vh;
     overflow: hidden;
 }
 
-/* --- THE TUNNEL ENGINE --- */
+/* --- THE MORPHING CANVAS --- */
 #lounge-canvas {
     position: fixed;
     inset: 0;
     z-index: 1;
 }
 
-/* --- GRAFFITI SYSTEM --- */
-#graffiti-vfx {
+/* --- THE GRAFFITI DRIP SYSTEM --- */
+#paint-buffer {
     position: fixed;
     inset: 0;
-    z-index: 5;
+    z-index: 10;
     pointer-events: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
-.tag {
+.splat {
     position: absolute;
-    font-size: 8vw;
-    font-style: italic;
     font-weight: 900;
-    color: transparent;
-    -webkit-text-stroke: 2px rgba(255, 255, 255, 0.1);
-    opacity: 0;
-    filter: blur(5px);
-    transition: all 0.1s;
-    text-transform: uppercase;
+    font-size: 6rem;
+    white-space: nowrap;
+    filter: drop-shadow(0 0 10px currentColor);
+    animation: drip-down 8s ease-in forwards;
 }
 
-/* --- THE STATIC HUD --- */
-#static-hud {
+@keyframes drip-down {
+    0% { transform: translateY(0) scale(0.8); opacity: 0; }
+    5% { transform: translateY(0) scale(1.1); opacity: 1; }
+    20% { transform: translateY(10px); }
+    100% { transform: translateY(400px); opacity: 0; }
+}
+
+/* --- COMMAND HUD --- */
+#command-hud {
     position: relative;
     z-index: 100;
-    width: 100%;
     height: 100%;
-    padding: 2rem;
+    padding: 3rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     pointer-events: none;
 }
 
-#static-hud header, #static-hud footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    pointer-events: auto;
+#command-hud > div { display: flex; justify-content: space-between; pointer-events: auto; }
+
+/* Scanner Badge */
+.id-badge {
+    position: relative;
+    padding-left: 20px;
+    border-left: 3px solid var(--neon-cyan);
 }
 
-#static-hud footer { align-items: flex-end; }
-
-/* Hazard Branding */
-.system-brand { display: flex; align-items: center; gap: 15px; }
-.hazard-icon {
-    width: 25px;
-    height: 25px;
-    background: var(--hazard-yellow);
-    clip-path: polygon(50% 0%, 0% 100%, 100% 100%); /* Triangle Warning */
-    animation: hazard-flash 1s steps(2) infinite;
+.scanner-line {
+    position: absolute;
+    left: -3px;
+    width: 3px;
+    height: 40px;
+    background: var(--hazard);
+    box-shadow: 0 0 15px var(--hazard);
+    animation: scan 2s linear infinite;
 }
 
-.brand-text h1 { font-size: 1.5rem; letter-spacing: -1px; line-height: 0.9; }
-.brand-text p { font-size: 0.6rem; color: var(--hazard-yellow); letter-spacing: 2px; }
-
-/* HUD Elements */
-#clock { font-size: 1.5rem; color: var(--neon-blue); text-shadow: 0 0 10px var(--neon-blue); }
-.meta-info { border-bottom: 4px solid #fff; padding-bottom: 10px; }
-#track-name { font-size: 2rem; letter-spacing: -2px; }
+.text-wrap h1 { font-size: 1.2rem; letter-spacing: 5px; }
+.text-wrap p { font-size: 0.6rem; color: var(--neon-cyan); margin-top: 5px; }
 
 /* The Vault Button */
 #inject-btn {
-    background: #fff;
-    color: #000;
-    border: none;
+    background: transparent;
+    border: 1px solid #fff;
+    color: #fff;
     padding: 1.5rem 3rem;
-    font-weight: 900;
-    font-size: 1rem;
     cursor: pointer;
-    clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%); /* Aggressive Slant */
-    transition: 0.2s;
+    font-weight: 900;
+    letter-spacing: 3px;
+    transition: 0.3s;
+    backdrop-filter: blur(10px);
 }
 
 #inject-btn:hover {
-    background: var(--neon-pink);
-    color: #fff;
-    transform: scale(1.05);
+    background: #fff;
+    color: #000;
+    box-shadow: 0 0 50px #fff;
 }
 
-/* --- CINEMA STAGE --- */
+/* --- VIDEO STAGE --- */
 #video-stage {
     position: fixed;
     inset: 0;
@@ -121,37 +115,36 @@ body {
     background: #000;
 }
 
-.video-frame {
-    width: 90vw;
-    height: 50.6vw;
-    border: 10px solid #111;
+.video-vault {
+    width: 85vw;
+    height: 47.8vw;
     position: relative;
-    box-shadow: 0 0 100px var(--neon-pink);
+    border: 1px solid rgba(255,255,255,0.2);
 }
 
-#video-player { width: 100%; height: 100%; object-fit: cover; }
-
-/* Effects Overlay */
-.noise-overlay {
-    position: fixed;
-    inset: 0;
-    background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
-    opacity: 0.1;
-    z-index: 150;
-    pointer-events: none;
-}
-
-.scanlines {
-    position: fixed;
-    inset: 0;
-    background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.3) 50%);
-    background-size: 100% 4px;
-    z-index: 160;
-    pointer-events: none;
+.glitch-border {
+    position: absolute;
+    inset: -5px;
+    border: 2px solid var(--neon-magenta);
+    opacity: 0.5;
+    animation: glitch-border-pulse 0.2s infinite alternate;
 }
 
 /* Animations */
-@keyframes hazard-flash {
-    from { opacity: 1; }
-    to { opacity: 0.2; }
+@keyframes scan {
+    0% { top: 0; }
+    100% { top: 100%; }
+}
+
+@keyframes glitch-border-pulse {
+    0% { transform: translate(2px, 0); }
+    100% { transform: translate(-2px, 0); }
+}
+
+.vignette {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle, transparent 30%, rgba(0,0,0,0.9) 100%);
+    pointer-events: none;
+    z-index: 150;
 }
