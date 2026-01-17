@@ -1,27 +1,64 @@
 :root {
-    --neon-cyan: #00f2ff;
+    --neon-blue: #00f2ff;
     --neon-purple: #9d00ff;
     --neon-pink: #ff00d4;
-    --bg-dark: #050505;
-    --hud-glass: rgba(0, 0, 0, 0.6);
+    --bg-black: #020202;
+    --glass: rgba(255, 255, 255, 0.03);
 }
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Courier New', Courier, monospace; /* Hard-coded tech font */
+    font-family: 'IBM Plex Mono', 'Courier New', monospace;
 }
 
 body {
-    background: var(--bg-dark);
+    background: var(--bg-black);
     color: #fff;
     height: 100vh;
     overflow: hidden;
     cursor: crosshair;
 }
 
-/* Layer 0: The 3D World */
+/* --- THE VIDEO STAGE --- */
+#video-stage {
+    position: fixed;
+    inset: 0;
+    display: none; /* Hidden by default */
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    background: #000;
+}
+
+.video-container {
+    position: relative;
+    width: 80vw;
+    max-height: 80vh;
+    box-shadow: 0 0 100px rgba(0,0,0,1);
+    z-index: 6;
+}
+
+#video-player {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Ambient light bleed from video */
+.video-glow {
+    position: absolute;
+    inset: -20px;
+    background: inherit;
+    filter: blur(80px);
+    opacity: 0.6;
+    z-index: -1;
+    transition: all 0.5s;
+}
+
+/* --- THE 3D CANVAS --- */
 #lounge-canvas {
     position: fixed;
     top: 0;
@@ -29,13 +66,13 @@ body {
     z-index: 1;
 }
 
-/* Layer 2: The HUD Overlay */
+/* --- THE HUD (Heads Up Display) --- */
 #hud-overlay {
     position: relative;
-    z-index: 10;
+    z-index: 20; /* High z-index to stay above video */
     width: 100%;
     height: 100%;
-    padding: 3rem;
+    padding: 2.5rem;
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
@@ -44,126 +81,56 @@ body {
 
 #hud-overlay > div { pointer-events: auto; }
 
-/* --- CORNER STYLES --- */
-
-/* Top Left: Branding */
-.hud-top-left {
-    display: flex;
-    align-items: flex-start;
-}
-
-.branding {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.pulse-ring {
+/* Branding & Orb */
+.hud-top-left { display: flex; align-items: center; gap: 1rem; }
+.status-orb {
     width: 12px;
     height: 12px;
-    background: var(--neon-cyan);
     border-radius: 50%;
-    box-shadow: 0 0 15px var(--neon-cyan);
-    animation: pulse 2s infinite;
+    background: var(--neon-blue);
+    box-shadow: 0 0 15px var(--neon-blue);
+    transition: background 0.5s, box-shadow 0.5s;
 }
 
-.brand-text h1 {
-    font-size: 1.1rem;
-    letter-spacing: 5px;
-    font-weight: 900;
-    text-shadow: 0 0 10px var(--neon-cyan);
-}
+.brand-text h1 { font-size: 1rem; letter-spacing: 6px; font-weight: 900; }
+.brand-text p { font-size: 0.5rem; letter-spacing: 3px; color: var(--neon-purple); }
 
-.brand-text p {
-    font-size: 0.6rem;
-    letter-spacing: 2px;
-    color: var(--neon-purple);
-}
+/* Telemetry */
+.hud-top-right { text-align: right; font-size: 0.8rem; color: var(--neon-blue); }
 
-/* Top Right: Telemetry */
-.hud-top-right {
-    text-align: right;
-    font-size: 0.8rem;
-    letter-spacing: 2px;
-    color: var(--neon-cyan);
-}
+/* Meta Box */
+.hud-bottom-left { display: flex; align-items: flex-end; }
+.meta-box { border-left: 1px solid var(--neon-pink); padding-left: 20px; }
+.label { font-size: 0.5rem; opacity: 0.4; text-transform: uppercase; }
+#track-name { font-size: 1rem; letter-spacing: 2px; margin: 4px 0; }
+.mode-tag { font-size: 0.5rem; background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 2px; }
 
-/* Bottom Left: Metadata */
-.hud-bottom-left {
-    display: flex;
-    align-items: flex-end;
-}
-
-.meta-container {
-    border-left: 2px solid var(--neon-pink);
-    padding-left: 15px;
-}
-
-.label { font-size: 0.5rem; opacity: 0.5; }
-#track-name { font-size: 1.2rem; letter-spacing: 2px; margin: 5px 0; }
-.visual-badge {
-    display: inline-block;
-    padding: 2px 8px;
-    background: var(--neon-purple);
-    font-size: 0.5rem;
-    border-radius: 2px;
-}
-
-/* Bottom Right: Injection */
-.hud-bottom-right {
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-end;
-}
-
-.glow-button {
+/* The Cyber Button */
+.hud-bottom-right { display: flex; justify-content: flex-end; align-items: flex-end; }
+.cyber-btn {
     background: transparent;
-    border: 1px solid var(--neon-cyan);
-    color: var(--neon-cyan);
-    padding: 1rem 2rem;
+    border: 1px solid var(--neon-blue);
+    color: var(--neon-blue);
+    padding: 0.8rem 1.5rem;
     cursor: pointer;
-    transition: 0.3s;
-    overflow: hidden;
-    position: relative;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.glow-button:hover {
-    background: var(--neon-cyan);
+.cyber-btn:hover {
+    background: var(--neon-blue);
     color: #000;
-    box-shadow: 0 0 40px var(--neon-cyan);
+    box-shadow: 0 0 30px var(--neon-blue);
+    transform: translateY(-5px);
 }
 
-/* Scanline Effect Overlay */
-.scanlines {
+/* VHS/Film Grain Effect */
+.vhs-overlay {
     position: fixed;
     inset: 0;
-    background: linear-gradient(
-        to bottom,
-        transparent 50%,
-        rgba(0, 0, 0, 0.1) 51%
-    );
-    background-size: 100% 4px;
-    z-index: 100;
+    background: url('https://upload.wikimedia.org/wikipedia/commons/7/76/1k_scratched_metal_texture.jpg');
+    opacity: 0.03;
     pointer-events: none;
-    opacity: 0.3;
-}
-
-/* Animation */
-@keyframes pulse {
-    0% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.5); opacity: 0.5; }
-    100% { transform: scale(1); opacity: 1; }
-}
-
-/* Video Responsive Layer (Behind 3D) */
-#video-player {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    min-width: 100%;
-    min-height: 100%;
-    z-index: -1; /* Behind everything */
-    opacity: 0.4;
-    filter: blur(10px) saturate(2);
+    z-index: 100;
 }
