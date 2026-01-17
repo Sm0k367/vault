@@ -12,16 +12,18 @@
 
     <canvas id="lounge-canvas"></canvas>
 
-    <div id="media-vault">
-        <audio id="audio-player" crossorigin="anonymous"></audio>
-        <video id="video-player" playsinline crossorigin="anonymous"></audio>
+    <div id="video-stage">
+        <div class="video-container">
+            <video id="video-player" playsinline crossorigin="anonymous"></video>
+            <div class="video-glow"></div>
+        </div>
     </div>
 
     <div id="hud-overlay">
         
         <div class="hud-top-left">
             <div class="branding">
-                <div class="pulse-ring"></div>
+                <div class="status-orb"></div>
                 <div class="brand-text">
                     <h1>SMOKE STREAM</h1>
                     <p>AI LOUNGE // AFTER DARK</p>
@@ -31,27 +33,28 @@
 
         <div class="hud-top-right">
             <div id="clock">00:00:00</div>
-            <div class="session-id">VAULT_REF: <span id="vault-id">#8291-X</span></div>
+            <div class="session-id">VAULT_REF: <span id="vault-id">#LOADING</span></div>
         </div>
 
         <div class="hud-bottom-left">
-            <div class="meta-container">
-                <span class="label">CURRENT_STREAM</span>
-                <h2 id="track-name">STANDBY_MODE</h2>
-                <div class="visual-badge" id="visual-mode">NEURAL_STATIC</div>
+            <div class="meta-box">
+                <span class="label">SIGNAL_TYPE</span>
+                <h2 id="track-name">SYSTEM_IDLE</h2>
+                <div class="mode-tag" id="visual-mode">STATIC_VOID</div>
             </div>
         </div>
 
         <div class="hud-bottom-right">
             <input type="file" id="media-input" accept="audio/*,video/*" hidden>
-            <button id="inject-btn" class="glow-button">
-                <span class="btn-glitch">INJECT_MEDIA</span>
+            <button id="inject-btn" class="cyber-btn">
+                <span class="btn-text">INJECT_MEDIA</span>
             </button>
         </div>
 
     </div>
 
-    <div class="scanlines"></div>
+    <audio id="audio-player" crossorigin="anonymous"></audio>
+    <div class="vhs-overlay"></div>
 
     <script src="main.js"></script>
 </body>
