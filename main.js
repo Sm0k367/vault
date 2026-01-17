@@ -1,78 +1,72 @@
 /**
- * DJ SMOKE STREAM // THE VAULT
- * PRODUCTION ENGINE v5.0 - ANAMORPHIC UI
+ * DJ SMOKE STREAM // THE SINGULARITY
+ * ENGINE v6.0 - NEURAL GALAXY & MONOLITH
  */
 
-let scene, camera, renderer, crystal, analyser, dataArray;
+let scene, camera, renderer, analyser, dataArray;
+let stars, starGeo, starCount = 5000;
 let hue = 0;
-const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-// 1. Initialize 3D Visualizer
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+const monolith = document.getElementById('monolith-container');
+const hud = document.getElementById('neural-interface');
+
+// 1. Initialize the Neural Galaxy
 function init() {
     scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    renderer = new THREE.WebGLRenderer({ 
-        canvas: document.getElementById('lounge-canvas'), 
-        antialias: true, 
-        alpha: true 
-    });
+    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
+    camera.position.z = 1;
+    camera.rotation.x = Math.PI / 2;
+
+    renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('lounge-canvas'), antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(window.devicePixelRatio);
 
-    // The Neural Artifact
-    const geometry = new THREE.IcosahedronGeometry(2, 20);
-    const material = new THREE.MeshStandardMaterial({
-        color: 0x00f2ff,
-        wireframe: true,
-        emissive: 0x00f2ff,
-        emissiveIntensity: 0.5,
-        roughness: 0,
-        metalness: 1
+    // Create Star Particles
+    starGeo = new THREE.BufferGeometry();
+    let positions = new Float32Array(starCount * 3);
+    let velocities = new Float32Array(starCount);
+
+    for (let i = 0; i < starCount; i++) {
+        positions[i * 3] = Math.random() * 600 - 300;
+        positions[i * 3 + 1] = Math.random() * 600 - 300;
+        positions[i * 3 + 2] = Math.random() * 600 - 300;
+        velocities[i] = 0;
+    }
+
+    starGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    
+    let starMaterial = new THREE.PointsMaterial({
+        color: 0xffffff,
+        size: 0.7,
+        transparent: true,
+        opacity: 0.8
     });
-    
-    crystal = new THREE.Mesh(geometry, material);
-    scene.add(crystal);
 
-    // High-End Lighting
-    const light1 = new THREE.PointLight(0x00f2ff, 20, 100);
-    light1.position.set(5, 5, 5);
-    scene.add(light1);
-    
-    const light2 = new THREE.RectAreaLight(0xff00d4, 5, 10, 10);
-    light2.position.set(-5, -5, 5);
-    scene.add(light2);
+    stars = new THREE.Points(starGeo, starMaterial);
+    scene.add(stars);
 
-    camera.position.z = 6;
     animate();
 }
 
-// 2. Anamorphic UI Logic (The Mouse Tilt)
-const hud = document.getElementById('interactive-hud');
+// 2. Anamorphic Mouse Tracking (The "Billion Dollar" Tilt)
 window.addEventListener('mousemove', (e) => {
-    const x = (e.clientX / window.innerWidth - 0.5) * 20; // Tilt range
-    const y = (e.clientY / window.innerHeight - 0.5) * -20;
+    const x = (e.clientX / window.innerWidth - 0.5) * 30;
+    const y = (e.clientY / window.innerHeight - 0.5) * -30;
     
     gsap.to(hud, {
         rotationY: x,
         rotationX: y,
-        duration: 1.2,
-        ease: "power2.out"
-    });
-    
-    // Slight camera drift
-    gsap.to(camera.position, {
-        x: x * 0.05,
-        y: y * 0.05,
-        duration: 2
+        duration: 2,
+        ease: "power3.out"
     });
 });
 
-// 3. Media Injection Master
+// 3. Media Logic
 const mediaInput = document.getElementById('media-input');
 const injectBtn = document.getElementById('inject-btn');
 const audioPlayer = document.getElementById('audio-player');
 const videoPlayer = document.getElementById('video-player');
-const videoStage = document.getElementById('video-stage');
 
 injectBtn.addEventListener('click', () => mediaInput.click());
 
@@ -86,82 +80,77 @@ mediaInput.addEventListener('change', (e) => {
 
     const isVideo = file.type.includes('video');
     
-    // Reset States
-    audioPlayer.pause();
-    videoPlayer.pause();
-    
     if (isVideo) {
-        gsap.to('#lounge-canvas', { opacity: 0, duration: 1 });
-        videoStage.style.display = 'flex';
+        monolith.style.display = 'flex';
         videoPlayer.src = url;
         videoPlayer.play();
-        connectAnalyser(videoPlayer);
+        setupAudio(videoPlayer);
     } else {
-        gsap.to('#lounge-canvas', { opacity: 1, duration: 1 });
-        videoStage.style.display = 'none';
+        monolith.style.display = 'none';
         audioPlayer.src = url;
         audioPlayer.play();
-        connectAnalyser(audioPlayer);
+        setupAudio(audioPlayer);
     }
 });
 
-function connectAnalyser(element) {
+function setupAudio(element) {
     if (analyser) analyser.disconnect();
     const source = audioContext.createMediaElementSource(element);
     analyser = audioContext.createAnalyser();
     source.connect(analyser);
     analyser.connect(audioContext.destination);
-    analyser.fftSize = 256;
+    analyser.fftSize = 512;
     dataArray = new Uint8Array(analyser.frequencyBinCount);
 }
 
-// 4. Animation & Chroma Loop
+// 4. The Infinite Animation Loop
 function animate() {
     requestAnimationFrame(animate);
-    
-    // Constant Chroma Shift
-    hue = (hue + 0.2) % 360;
-    const color = new THREE.Color(`hsl(${hue}, 100%, 50%)`);
-    const cssColor = `hsl(${hue}, 100%, 50%)`;
-    
-    if (crystal) {
-        crystal.material.color.copy(color);
-        crystal.material.emissive.copy(color);
-        crystal.rotation.y += 0.002;
-    }
 
-    // Dynamic UI Color Sync
-    document.querySelector('.glitch-orb').style.background = cssColor;
-    document.querySelector('.glitch-orb').style.boxShadow = `0 0 20px ${cssColor}`;
-    document.getElementById('clock').style.color = cssColor;
-    injectBtn.style.color = cssColor;
+    // Rotate the entire Galaxy
+    stars.rotation.y += 0.001;
+
+    // Color Cycle
+    hue = (hue + 0.1) % 360;
+    const color = new THREE.Color(`hsl(${hue}, 100%, 70%)`);
+    stars.material.color.copy(color);
+
+    // UI Feedback
+    document.querySelector('.core-node').style.boxShadow = `0 0 30px hsl(${hue}, 100%, 50%)`;
+    injectBtn.style.color = `hsl(${hue}, 100%, 50%)`;
+
+    // Audio-Reactive Particle Warp
+    const positions = starGeo.attributes.position.array;
+    let speed = 0.5;
 
     if (analyser) {
         analyser.getByteFrequencyData(dataArray);
         const avg = dataArray.reduce((a, b) => a + b) / dataArray.length;
+        speed = 0.5 + (avg / 20); // The stars warp faster on loud beats
         
-        // Reactive Scale
-        const s = 1 + (avg / 100);
-        crystal.scale.set(s, s, s);
-        
-        // Bass Shake Effect
-        if (avg > 100) {
-            gsap.to(camera, { x: (Math.random()-0.5)*0.1, duration: 0.1 });
+        // Shake Camera on Bass
+        if (dataArray[2] > 210) {
+            camera.position.z = 1 + (Math.random() * 0.1);
         }
     }
+
+    for (let i = 0; i < starCount; i++) {
+        // Move stars toward the camera (Z axis)
+        positions[i * 3 + 2] += speed;
+
+        // Reset stars that pass the camera
+        if (positions[i * 3 + 2] > 500) {
+            positions[i * 3 + 2] = -500;
+        }
+    }
+    starGeo.attributes.position.needsUpdate = true;
 
     renderer.render(scene, camera);
 }
 
-// Global Utilities
+// Clock Logic
 setInterval(() => {
     document.getElementById('clock').innerText = new Date().toLocaleTimeString();
 }, 1000);
-
-window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-});
 
 init();
