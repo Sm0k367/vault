@@ -12,43 +12,46 @@
 
     <canvas id="lounge-canvas"></canvas>
 
-    <div id="ui-wrapper">
-        <header>
-            <div class="brand-box">
-                <span class="status-dot"></span>
-                <h1>DJ SMOKE STREAM</h1>
-                <p>@ AI LOUNGE AFTER DARK</p>
-            </div>
-            <div class="system-stats">
-                <span id="clock">00:00:00</span>
-                <span class="location">VAULT_01</span>
-            </div>
-        </header>
-
-        <main id="drop-zone">
-            <div class="center-content">
-                <div class="glitch-title" data-text="INJECT MEDIA">INJECT MEDIA</div>
-                <p class="subtitle">DRAG & DROP AUDIO OR VIDEO</p>
-                <input type="file" id="media-input" accept="audio/*,video/*" hidden>
-                <button id="upload-btn">ACCESS VAULT</button>
-            </div>
-        </main>
-
-        <footer>
-            <div class="track-info">
-                <div id="track-name">SYSTEM_STANDBY</div>
-                <div id="visual-mode">MODE: NEURAL_STATIC</div>
-            </div>
-            <div class="controls">
-                <div class="vol-slider">
-                    <div id="vol-fill"></div>
-                </div>
-            </div>
-        </footer>
+    <div id="media-vault">
+        <audio id="audio-player" crossorigin="anonymous"></audio>
+        <video id="video-player" playsinline crossorigin="anonymous"></audio>
     </div>
 
-    <audio id="audio-player"></audio>
-    <video id="video-player" playsinline></video>
+    <div id="hud-overlay">
+        
+        <div class="hud-top-left">
+            <div class="branding">
+                <div class="pulse-ring"></div>
+                <div class="brand-text">
+                    <h1>SMOKE STREAM</h1>
+                    <p>AI LOUNGE // AFTER DARK</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="hud-top-right">
+            <div id="clock">00:00:00</div>
+            <div class="session-id">VAULT_REF: <span id="vault-id">#8291-X</span></div>
+        </div>
+
+        <div class="hud-bottom-left">
+            <div class="meta-container">
+                <span class="label">CURRENT_STREAM</span>
+                <h2 id="track-name">STANDBY_MODE</h2>
+                <div class="visual-badge" id="visual-mode">NEURAL_STATIC</div>
+            </div>
+        </div>
+
+        <div class="hud-bottom-right">
+            <input type="file" id="media-input" accept="audio/*,video/*" hidden>
+            <button id="inject-btn" class="glow-button">
+                <span class="btn-glitch">INJECT_MEDIA</span>
+            </button>
+        </div>
+
+    </div>
+
+    <div class="scanlines"></div>
 
     <script src="main.js"></script>
 </body>
