@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DJ SMOKE // THE ETERNAL MORPH</title>
+    <title>DJ SMOKE STREAM // THE QUANTUM VAULT</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -12,35 +12,33 @@
 
     <canvas id="lounge-canvas"></canvas>
 
-    <div id="paint-buffer"></div>
-
     <div id="video-stage">
-        <div class="video-vault">
+        <div class="video-container">
             <video id="video-player" playsinline crossorigin="anonymous"></video>
-            <div class="glitch-border"></div>
+            <div class="glow-wrap"></div>
         </div>
     </div>
 
-    <div id="command-hud">
-        <div class="top-row">
-            <div class="id-badge">
-                <div class="scanner-line"></div>
-                <div class="text-wrap">
-                    <h1>DJ SMOKE STREAM</h1>
-                    <p>STATUS: EVOLVING_SYSTEM</p>
+    <div id="hud">
+        <div class="top-bar">
+            <div class="sys-info">
+                <div class="pulse-node"></div>
+                <div class="sys-labels">
+                    <h1>SMOKE_STREAM</h1>
+                    <p>QUANTUM_VISUALIZER_v9.0</p>
                 </div>
             </div>
             <div id="clock">00:00:00</div>
         </div>
 
-        <div class="bottom-row">
-            <div class="track-meta">
-                <span class="label">NEURAL_INPUT</span>
-                <h2 id="track-name">LISTENING_FOR_SIGNAL</h2>
+        <div class="bottom-bar">
+            <div class="meta-data">
+                <span class="type-label">SIGNAL_ID:</span>
+                <h2 id="track-name">VOID_LISTENING</h2>
             </div>
-            <div class="action-zone">
+            <div class="action-core">
                 <input type="file" id="media-input" accept="audio/*,video/*" hidden>
-                <button id="inject-btn">INITIALIZE INJECTION</button>
+                <button id="inject-btn">INJECT_MEDIA</button>
             </div>
         </div>
     </div>
