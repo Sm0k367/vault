@@ -1,89 +1,84 @@
 /**
- * DJ SMOKE STREAM // THE ETERNAL MORPH
- * ENGINE v8.0 - SHAPE-SHIFT & DRIP
+ * DJ SMOKE STREAM // THE QUANTUM VAULT
+ * ENGINE v9.0 - PARTICLE TOPOLOGY
  */
 
 let scene, camera, renderer, analyser, dataArray;
-let mainMesh, material;
-let geometries = [];
-let currentGeoIndex = 0;
+let particleSystem, particleCount = 10000;
+let positions, targetPositions, colors;
+let morphStates = [];
+let currentMode = 0;
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-// 1. Initialize the Morphing Environment
 function init() {
     scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
+    camera.position.z = 5;
+
     renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('lounge-canvas'), antialias: true, alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(window.devicePixelRatio);
 
-    // Define the 5 Stages of Matter
-    geometries = [
-        new THREE.IcosahedronGeometry(2, 15),       // The Crystal
-        new THREE.TorusKnotGeometry(1.5, 0.4, 200, 32), // The Knot
-        new THREE.OctahedronGeometry(2, 5),         // The Spike
-        new THREE.SphereGeometry(2, 32, 32),        // The Liquid
-        new THREE.TorusGeometry(2, 0.2, 16, 100)    // The Ring
-    ];
+    // 1. Create Particle Buffers
+    const geometry = new THREE.BufferGeometry();
+    positions = new Float32Array(particleCount * 3);
+    targetPositions = new Float32Array(particleCount * 3);
+    colors = new Float32Array(particleCount * 3);
 
-    material = new THREE.MeshPhongMaterial({
-        color: 0x00f2ff,
-        wireframe: true,
-        emissive: 0x9d00ff,
-        emissiveIntensity: 0.5,
-        shininess: 100
+    // Initial Random Cloud
+    for (let i = 0; i < particleCount; i++) {
+        positions[i * 3] = (Math.random() - 0.5) * 10;
+        positions[i * 3 + 1] = (Math.random() - 0.5) * 10;
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
+        
+        colors[i * 3] = 1;     // R
+        colors[i * 3 + 1] = 1; // G
+        colors[i * 3 + 2] = 1; // B
+    }
+
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    const material = new THREE.PointsMaterial({
+        size: 0.015,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.8,
+        blending: THREE.AdditiveBlending
     });
 
-    mainMesh = new THREE.Mesh(geometries[0], material);
-    scene.add(mainMesh);
+    particleSystem = new THREE.Points(geometry, material);
+    scene.add(particleSystem);
 
-    const light1 = new THREE.PointLight(0xff00d4, 20, 100);
-    light1.position.set(5, 5, 5);
-    scene.add(light1);
-    
-    const light2 = new THREE.AmbientLight(0x202020);
-    scene.add(light2);
-
-    camera.position.z = 5;
+    // 2. Pre-Calculate Morph States (Sphere, Cube, Torus)
+    createMorphStates();
     animate();
 }
 
-// 2. The Persistent Graffiti Splat Logic
-function triggerSplat() {
-    const buffer = document.getElementById('paint-buffer');
-    const splat = document.createElement('div');
-    const words = ["DJ SMOKE", "VAULT", "DROP", "MORPH", "AFTER DARK", "HYPER", "GRIME"];
-    const colors = ["#00f2ff", "#ff00d4", "#f0f214", "#ffffff"];
-    
-    splat.className = 'splat';
-    splat.innerText = words[Math.floor(Math.random() * words.length)];
-    splat.style.left = Math.random() * 70 + 15 + '%';
-    splat.style.top = Math.random() * 40 + 10 + '%';
-    splat.style.color = colors[Math.floor(Math.random() * colors.length)];
-    splat.style.transform = `rotate(${Math.random() * 40 - 20}deg)`;
-    
-    buffer.appendChild(splat);
-    
-    // Cleanup to prevent memory lag
-    setTimeout(() => splat.remove(), 8000);
+function createMorphStates() {
+    const sphereTarget = new Float32Array(particleCount * 3);
+    const torusTarget = new Float32Array(particleCount * 3);
+
+    for (let i = 0; i < particleCount; i++) {
+        // Sphere State
+        const phi = Math.acos(-1 + (2 * i) / particleCount);
+        const theta = Math.sqrt(particleCount * Math.PI) * phi;
+        sphereTarget[i * 3] = 2 * Math.cos(theta) * Math.sin(phi);
+        sphereTarget[i * 3 + 1] = 2 * Math.sin(theta) * Math.sin(phi);
+        sphereTarget[i * 3 + 2] = 2 * Math.cos(phi);
+
+        // Torus State
+        const u = Math.random() * Math.PI * 2;
+        const v = Math.random() * Math.PI * 2;
+        const R = 2.5, r = 0.5;
+        torusTarget[i * 3] = (R + r * Math.cos(v)) * Math.cos(u);
+        torusTarget[i * 3 + 1] = (R + r * Math.cos(v)) * Math.sin(u);
+        torusTarget[i * 3 + 2] = r * Math.sin(v);
+    }
+    morphStates = [sphereTarget, torusTarget];
 }
 
-// 3. The Morph Logic
-function evolveShape() {
-    currentGeoIndex = (currentGeoIndex + 1) % geometries.length;
-    
-    // Smooth transition using GSAP
-    gsap.to(mainMesh.scale, { 
-        x: 0, y: 0, z: 0, 
-        duration: 0.4, 
-        onComplete: () => {
-            mainMesh.geometry = geometries[currentGeoIndex];
-            gsap.to(mainMesh.scale, { x: 1, y: 1, z: 1, duration: 0.6, ease: "back.out(1.7)" });
-        }
-    });
-}
-
-// 4. Media Handlers
+// 3. Media Logic
 const mediaInput = document.getElementById('media-input');
 const injectBtn = document.getElementById('inject-btn');
 const audioPlayer = document.getElementById('audio-player');
@@ -95,24 +90,17 @@ injectBtn.addEventListener('click', () => mediaInput.click());
 mediaInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
     const url = URL.createObjectURL(file);
     document.getElementById('track-name').innerText = file.name.toUpperCase();
     if (audioContext.state === 'suspended') audioContext.resume();
 
     const isVideo = file.type.includes('video');
+    videoStage.style.display = isVideo ? 'flex' : 'none';
+    const activePlayer = isVideo ? videoPlayer : audioPlayer;
+    activePlayer.src = url;
+    activePlayer.play();
     
-    if (isVideo) {
-        videoStage.style.display = 'flex';
-        videoPlayer.src = url;
-        videoPlayer.play();
-        setupAudio(videoPlayer);
-    } else {
-        videoStage.style.display = 'none';
-        audioPlayer.src = url;
-        audioPlayer.play();
-        setupAudio(audioPlayer);
-    }
+    setupAudio(activePlayer);
 });
 
 function setupAudio(element) {
@@ -121,49 +109,57 @@ function setupAudio(element) {
     analyser = audioContext.createAnalyser();
     source.connect(analyser);
     analyser.connect(audioContext.destination);
-    analyser.fftSize = 256;
+    analyser.fftSize = 512;
     dataArray = new Uint8Array(analyser.frequencyBinCount);
 }
 
-// 5. Main Animation Loop
-let lastSplat = 0;
+// 4. The Quantum Loop
 let lastMorph = 0;
-
 function animate() {
     requestAnimationFrame(animate);
 
-    mainMesh.rotation.y += 0.005;
-    mainMesh.rotation.x += 0.003;
+    const posAttr = particleSystem.geometry.attributes.position;
+    const colAttr = particleSystem.geometry.attributes.color;
 
     if (analyser) {
         analyser.getByteFrequencyData(dataArray);
         const bass = dataArray[2];
-        const mid = dataArray[10];
-
-        // Reactive Scale
-        const s = 1 + (bass / 150);
-        mainMesh.scale.lerp(new THREE.Vector3(s, s, s), 0.1);
-
-        // Splat trigger on Snare/Mid-range (with cooldown)
-        if (mid > 190 && Date.now() - lastSplat > 600) {
-            triggerSplat();
-            lastSplat = Date.now();
-        }
-
-        // Morph trigger on Heavy Bass Drop
-        if (bass > 230 && Date.now() - lastMorph > 4000) {
-            evolveShape();
+        const avg = dataArray.reduce((a, b) => a + b) / dataArray.length;
+        
+        // Auto-switch morph state on heavy bass
+        if (bass > 220 && Date.now() - lastMorph > 3000) {
+            currentMode = (currentMode + 1) % morphStates.length;
             lastMorph = Date.now();
         }
+
+        const target = morphStates[currentMode];
+
+        for (let i = 0; i < particleCount; i++) {
+            const i3 = i * 3;
+            
+            // LERP physics (Linear Interpolation)
+            // Each particle moves toward its target state + audio turbulence
+            const turbulence = (avg / 50) * Math.sin(Date.now() * 0.001 + i);
+            posAttr.array[i3] += (target[i3] - posAttr.array[i3]) * 0.05 + turbulence * 0.01;
+            posAttr.array[i3+1] += (target[i3+1] - posAttr.array[i3+1]) * 0.05;
+            posAttr.array[i3+2] += (target[i3+2] - posAttr.array[i3+2]) * 0.05;
+
+            // Reactive Colors (Shift from White to Cyan/Pink on volume)
+            colAttr.array[i3] = 0.5 + (bass / 512);     // Red channel
+            colAttr.array[i3+1] = 0.8 - (avg / 256);   // Green channel
+            colAttr.array[i3+2] = 1.0;                 // Blue channel (keep it blue-ish)
+        }
         
-        // Color Shifting based on music
-        material.emissiveIntensity = bass / 50;
+        particleSystem.rotation.y += 0.002 + (avg / 1000);
+        posAttr.needsUpdate = true;
+        colAttr.needsUpdate = true;
+    } else {
+        particleSystem.rotation.y += 0.001;
     }
 
     renderer.render(scene, camera);
 }
 
-// Telemetry
 setInterval(() => {
     document.getElementById('clock').innerText = new Date().toLocaleTimeString();
 }, 1000);
