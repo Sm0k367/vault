@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DJ SMOKE STREAM @ AI LOUNGE AFTER DARK</title>
+    <title>DJ SMOKE STREAM // THE VAULT</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -13,48 +13,55 @@
     <canvas id="lounge-canvas"></canvas>
 
     <div id="video-stage">
-        <div class="video-container">
+        <div class="cinema-frame">
             <video id="video-player" playsinline crossorigin="anonymous"></video>
-            <div class="video-glow"></div>
+            <div class="ambient-glow"></div>
         </div>
     </div>
 
-    <div id="hud-overlay">
+    <div id="interactive-hud">
         
-        <div class="hud-top-left">
-            <div class="branding">
-                <div class="status-orb"></div>
-                <div class="brand-text">
-                    <h1>SMOKE STREAM</h1>
-                    <p>AI LOUNGE // AFTER DARK</p>
+        <div class="hud-layer top-edge">
+            <div class="brand-unit">
+                <div class="glitch-orb"></div>
+                <div class="brand-meta">
+                    <h1 class="tracking-widest">DJ SMOKE STREAM</h1>
+                    <p class="text-glow">AI LOUNGE // AFTER DARK</p>
                 </div>
             </div>
-        </div>
-
-        <div class="hud-top-right">
-            <div id="clock">00:00:00</div>
-            <div class="session-id">VAULT_REF: <span id="vault-id">#LOADING</span></div>
-        </div>
-
-        <div class="hud-bottom-left">
-            <div class="meta-box">
-                <span class="label">SIGNAL_TYPE</span>
-                <h2 id="track-name">SYSTEM_IDLE</h2>
-                <div class="mode-tag" id="visual-mode">STATIC_VOID</div>
+            <div class="telemetry-unit">
+                <div id="clock">00:00:00</div>
+                <div class="coord-sync">LAT: 34.0522 // LON: -118.2437</div>
             </div>
         </div>
 
-        <div class="hud-bottom-right">
-            <input type="file" id="media-input" accept="audio/*,video/*" hidden>
-            <button id="inject-btn" class="cyber-btn">
-                <span class="btn-text">INJECT_MEDIA</span>
-            </button>
+        <div class="hud-layer bottom-edge">
+            <div class="metadata-unit">
+                <div class="bar-visualizer">
+                    <span></span><span></span><span></span><span></span>
+                </div>
+                <div class="track-details">
+                    <span class="label">ENCRYPTED_SIGNAL</span>
+                    <h2 id="track-name">IDLE_STATE</h2>
+                </div>
+            </div>
+            
+            <div class="action-unit">
+                <input type="file" id="media-input" accept="audio/*,video/*" hidden>
+                <button id="inject-btn" class="production-btn">
+                    <div class="btn-visuals"></div>
+                    <span class="btn-text">INITIALIZE_INJECTION</span>
+                </button>
+            </div>
         </div>
 
     </div>
 
+    <div class="film-grain"></div>
+    <div class="vignette"></div>
+    <div class="chromatic-glitch"></div>
+
     <audio id="audio-player" crossorigin="anonymous"></audio>
-    <div class="vhs-overlay"></div>
 
     <script src="main.js"></script>
 </body>
