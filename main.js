@@ -1,70 +1,89 @@
 /**
- * DJ SMOKE STREAM // THE STREET VAULT
- * ENGINE v7.0 - RECURSIVE TUNNEL & GRAFFITI
+ * DJ SMOKE STREAM // THE ETERNAL MORPH
+ * ENGINE v8.0 - SHAPE-SHIFT & DRIP
  */
 
-let scene, camera, renderer, tunnel, analyser, dataArray;
-let tunnelGeo, tunnelMat;
+let scene, camera, renderer, analyser, dataArray;
+let mainMesh, material;
+let geometries = [];
+let currentGeoIndex = 0;
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-// 1. Initialize the Industrial Tunnel
+// 1. Initialize the Morphing Environment
 function init() {
     scene = new THREE.Scene();
-    // Use a wide FOV for that "high-speed" look
-    camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 0.1, 1000);
-    
-    renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('lounge-canvas'), antialias: true });
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('lounge-canvas'), antialias: true, alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // Create the "Torus Knot" Tunnel
-    // P and Q determine the number of winds around the axis
-    tunnelGeo = new THREE.TorusKnotGeometry(10, 3, 200, 32, 2, 3);
-    tunnelMat = new THREE.MeshPhongMaterial({
-        color: 0xffffff,
+    // Define the 5 Stages of Matter
+    geometries = [
+        new THREE.IcosahedronGeometry(2, 15),       // The Crystal
+        new THREE.TorusKnotGeometry(1.5, 0.4, 200, 32), // The Knot
+        new THREE.OctahedronGeometry(2, 5),         // The Spike
+        new THREE.SphereGeometry(2, 32, 32),        // The Liquid
+        new THREE.TorusGeometry(2, 0.2, 16, 100)    // The Ring
+    ];
+
+    material = new THREE.MeshPhongMaterial({
+        color: 0x00f2ff,
         wireframe: true,
-        side: THREE.DoubleSide,
-        emissive: 0x000000,
+        emissive: 0x9d00ff,
+        emissiveIntensity: 0.5,
+        shininess: 100
     });
 
-    tunnel = new THREE.Mesh(tunnelGeo, tunnelMat);
-    scene.add(tunnel);
+    mainMesh = new THREE.Mesh(geometries[0], material);
+    scene.add(mainMesh);
 
-    // Dynamic Tunnel Lighting
-    const light1 = new THREE.PointLight(0x00f2ff, 50, 50);
-    light1.position.set(0, 0, 5);
+    const light1 = new THREE.PointLight(0xff00d4, 20, 100);
+    light1.position.set(5, 5, 5);
     scene.add(light1);
-
-    const light2 = new THREE.PointLight(0xff00d4, 50, 50);
-    light2.position.set(0, 5, 0);
+    
+    const light2 = new THREE.AmbientLight(0x202020);
     scene.add(light2);
 
-    camera.position.z = 30;
+    camera.position.z = 5;
     animate();
 }
 
-// 2. Graffiti Flash System (Outside the Box Logic)
-function flashGraffiti() {
-    const tags = ['tag-1', 'tag-2', 'tag-3'];
-    const randomTag = document.getElementById(tags[Math.floor(Math.random() * tags.length)]);
-    const colors = ['#f0f214', '#00f2ff', '#ff00d4', '#ffffff'];
+// 2. The Persistent Graffiti Splat Logic
+function triggerSplat() {
+    const buffer = document.getElementById('paint-buffer');
+    const splat = document.createElement('div');
+    const words = ["DJ SMOKE", "VAULT", "DROP", "MORPH", "AFTER DARK", "HYPER", "GRIME"];
+    const colors = ["#00f2ff", "#ff00d4", "#f0f214", "#ffffff"];
     
-    // Randomize position and rotation
-    randomTag.style.left = Math.random() * 60 + 20 + '%';
-    randomTag.style.top = Math.random() * 60 + 20 + '%';
-    randomTag.style.transform = `rotate(${Math.random() * 40 - 20}deg)`;
-    randomTag.style.color = colors[Math.floor(Math.random() * colors.length)];
-    randomTag.style.opacity = '1';
-    randomTag.style.filter = 'blur(0px)';
+    splat.className = 'splat';
+    splat.innerText = words[Math.floor(Math.random() * words.length)];
+    splat.style.left = Math.random() * 70 + 15 + '%';
+    splat.style.top = Math.random() * 40 + 10 + '%';
+    splat.style.color = colors[Math.floor(Math.random() * colors.length)];
+    splat.style.transform = `rotate(${Math.random() * 40 - 20}deg)`;
     
-    // Quick fade out
-    setTimeout(() => {
-        randomTag.style.opacity = '0';
-        randomTag.style.filter = 'blur(20px)';
-    }, 150);
+    buffer.appendChild(splat);
+    
+    // Cleanup to prevent memory lag
+    setTimeout(() => splat.remove(), 8000);
 }
 
-// 3. Media Handlers
+// 3. The Morph Logic
+function evolveShape() {
+    currentGeoIndex = (currentGeoIndex + 1) % geometries.length;
+    
+    // Smooth transition using GSAP
+    gsap.to(mainMesh.scale, { 
+        x: 0, y: 0, z: 0, 
+        duration: 0.4, 
+        onComplete: () => {
+            mainMesh.geometry = geometries[currentGeoIndex];
+            gsap.to(mainMesh.scale, { x: 1, y: 1, z: 1, duration: 0.6, ease: "back.out(1.7)" });
+        }
+    });
+}
+
+// 4. Media Handlers
 const mediaInput = document.getElementById('media-input');
 const injectBtn = document.getElementById('inject-btn');
 const audioPlayer = document.getElementById('audio-player');
@@ -102,43 +121,49 @@ function setupAudio(element) {
     analyser = audioContext.createAnalyser();
     source.connect(analyser);
     analyser.connect(audioContext.destination);
-    analyser.fftSize = 128; // Smaller for faster response
+    analyser.fftSize = 256;
     dataArray = new Uint8Array(analyser.frequencyBinCount);
 }
 
-// 4. Animation & Audio Sync
+// 5. Main Animation Loop
+let lastSplat = 0;
+let lastMorph = 0;
+
 function animate() {
     requestAnimationFrame(animate);
 
-    // Infinite Tunnel Spin
-    tunnel.rotation.z += 0.005;
-    tunnel.rotation.x += 0.002;
+    mainMesh.rotation.y += 0.005;
+    mainMesh.rotation.x += 0.003;
 
     if (analyser) {
         analyser.getByteFrequencyData(dataArray);
-        
-        // Bass sensing for tunnel scale
-        const bass = dataArray[1];
-        const mid = dataArray[15];
-        const s = 1 + (bass / 200);
-        tunnel.scale.set(s, s, s);
+        const bass = dataArray[2];
+        const mid = dataArray[10];
 
-        // Flash graffiti on sharp mid-range transients (snares/claps)
-        if (mid > 180) {
-            flashGraffiti();
-            tunnelMat.color.setHex(0xffffff); // Flash white tunnel
-        } else {
-            tunnelMat.color.setHex(0x333333); // Dark tunnel
+        // Reactive Scale
+        const s = 1 + (bass / 150);
+        mainMesh.scale.lerp(new THREE.Vector3(s, s, s), 0.1);
+
+        // Splat trigger on Snare/Mid-range (with cooldown)
+        if (mid > 190 && Date.now() - lastSplat > 600) {
+            triggerSplat();
+            lastSplat = Date.now();
         }
 
-        // Warp the tunnel based on intensity
-        tunnel.rotation.z += (bass / 500);
+        // Morph trigger on Heavy Bass Drop
+        if (bass > 230 && Date.now() - lastMorph > 4000) {
+            evolveShape();
+            lastMorph = Date.now();
+        }
+        
+        // Color Shifting based on music
+        material.emissiveIntensity = bass / 50;
     }
 
     renderer.render(scene, camera);
 }
 
-// Clock Utility
+// Telemetry
 setInterval(() => {
     document.getElementById('clock').innerText = new Date().toLocaleTimeString();
 }, 1000);
