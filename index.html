@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DJ SMOKE // THE SUBWAY VAULT</title>
+    <title>DJ SMOKE // THE ETERNAL MORPH</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -12,48 +12,41 @@
 
     <canvas id="lounge-canvas"></canvas>
 
-    <div id="graffiti-vfx">
-        <div class="tag" id="tag-1">DJ SMOKE</div>
-        <div class="tag" id="tag-2">VAULT_01</div>
-        <div class="tag" id="tag-3">AFTER DARK</div>
-    </div>
+    <div id="paint-buffer"></div>
 
     <div id="video-stage">
-        <div class="video-frame">
+        <div class="video-vault">
             <video id="video-player" playsinline crossorigin="anonymous"></video>
-            <div class="video-aura"></div>
+            <div class="glitch-border"></div>
         </div>
     </div>
 
-    <div id="static-hud">
-        <header>
-            <div class="system-brand">
-                <div class="hazard-icon"></div>
-                <div class="brand-text">
-                    <h1>SMOKE STREAM</h1>
-                    <p>STREET_CIPHER_PROTOCOL</p>
+    <div id="command-hud">
+        <div class="top-row">
+            <div class="id-badge">
+                <div class="scanner-line"></div>
+                <div class="text-wrap">
+                    <h1>DJ SMOKE STREAM</h1>
+                    <p>STATUS: EVOLVING_SYSTEM</p>
                 </div>
             </div>
-            <div class="telemetry">
-                <div id="clock">00:00:00</div>
-                <div class="link-status">ENCRYPTED</div>
-            </div>
-        </header>
+            <div id="clock">00:00:00</div>
+        </div>
 
-        <footer>
-            <div class="meta-info">
-                <span class="label">LIVE_FEED</span>
-                <h2 id="track-name">READY_TO_INJECT</h2>
+        <div class="bottom-row">
+            <div class="track-meta">
+                <span class="label">NEURAL_INPUT</span>
+                <h2 id="track-name">LISTENING_FOR_SIGNAL</h2>
             </div>
-            <div class="controls">
+            <div class="action-zone">
                 <input type="file" id="media-input" accept="audio/*,video/*" hidden>
-                <button id="inject-btn">ACCESS VAULT</button>
+                <button id="inject-btn">INITIALIZE INJECTION</button>
             </div>
-        </footer>
+        </div>
     </div>
 
-    <div class="noise-overlay"></div>
-    <div class="scanlines"></div>
+    <div class="vignette"></div>
+    <div class="grain"></div>
 
     <audio id="audio-player" crossorigin="anonymous"></audio>
 
