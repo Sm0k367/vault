@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DJ SMOKE STREAM // THE QUANTUM VAULT</title>
+    <title>DJ SMOKE // THE INFINITE EVOLUTION</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -11,42 +11,37 @@
 <body>
 
     <canvas id="lounge-canvas"></canvas>
-
-    <div id="video-stage">
-        <div class="video-container">
-            <video id="video-player" playsinline crossorigin="anonymous"></video>
-            <div class="glow-wrap"></div>
-        </div>
-    </div>
+    <div id="chroma-leak"></div>
 
     <div id="hud">
-        <div class="top-bar">
-            <div class="sys-info">
-                <div class="pulse-node"></div>
-                <div class="sys-labels">
-                    <h1>SMOKE_STREAM</h1>
-                    <p>QUANTUM_VISUALIZER_v9.0</p>
+        <div class="top-row">
+            <div class="status-unit">
+                <div class="dna-spinner"></div>
+                <div class="labels">
+                    <h1>INFINITE_VAULT</h1>
+                    <p id="system-state">EVOLVING TOPOLOGY...</p>
                 </div>
             </div>
             <div id="clock">00:00:00</div>
         </div>
 
-        <div class="bottom-bar">
-            <div class="meta-data">
-                <span class="type-label">SIGNAL_ID:</span>
-                <h2 id="track-name">VOID_LISTENING</h2>
+        <div class="bottom-row">
+            <div class="media-readout">
+                <span class="signal-tag">NEURAL_FEED_ACTIVE</span>
+                <h2 id="track-name">AWAITING_INJECTION</h2>
             </div>
-            <div class="action-core">
+            <div class="interaction-node">
                 <input type="file" id="media-input" accept="audio/*,video/*" hidden>
-                <button id="inject-btn">INJECT_MEDIA</button>
+                <button id="inject-btn" class="evolution-btn">INITIATE_LINK</button>
             </div>
         </div>
     </div>
 
+    <div class="noise"></div>
     <div class="vignette"></div>
-    <div class="grain"></div>
 
     <audio id="audio-player" crossorigin="anonymous"></audio>
+    <video id="video-player" playsinline crossorigin="anonymous" style="display:none;"></video>
 
     <script src="main.js"></script>
 </body>
