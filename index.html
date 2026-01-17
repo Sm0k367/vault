@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DJ SMOKE STREAM // THE SINGULARITY</title>
+    <title>DJ SMOKE // THE SUBWAY VAULT</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -12,57 +12,49 @@
 
     <canvas id="lounge-canvas"></canvas>
 
-    <div id="monolith-container">
-        <div class="monolith-shield">
+    <div id="graffiti-vfx">
+        <div class="tag" id="tag-1">DJ SMOKE</div>
+        <div class="tag" id="tag-2">VAULT_01</div>
+        <div class="tag" id="tag-3">AFTER DARK</div>
+    </div>
+
+    <div id="video-stage">
+        <div class="video-frame">
             <video id="video-player" playsinline crossorigin="anonymous"></video>
-            <div class="light-spill"></div>
+            <div class="video-aura"></div>
         </div>
     </div>
 
-    <div id="neural-interface">
-        
-        <nav class="interface-top">
-            <div class="system-id">
-                <div class="core-node"></div>
-                <div class="brand-logotype">
-                    <span class="glitch-text" data-text="SMOKE STREAM">SMOKE STREAM</span>
-                    <p class="sub-label">NEURAL LINK // ACTIVE</p>
+    <div id="static-hud">
+        <header>
+            <div class="system-brand">
+                <div class="hazard-icon"></div>
+                <div class="brand-text">
+                    <h1>SMOKE STREAM</h1>
+                    <p>STREET_CIPHER_PROTOCOL</p>
                 </div>
             </div>
-            <div class="status-readout">
+            <div class="telemetry">
                 <div id="clock">00:00:00</div>
-                <div class="ping-rate">SYNC: 1.002ms</div>
+                <div class="link-status">ENCRYPTED</div>
             </div>
-        </nav>
+        </header>
 
-        <div class="interface-center">
+        <footer>
+            <div class="meta-info">
+                <span class="label">LIVE_FEED</span>
+                <h2 id="track-name">READY_TO_INJECT</h2>
             </div>
-
-        <nav class="interface-bottom">
-            <div class="media-telemetry">
-                <div class="freq-bars">
-                    <span></span><span></span><span></span><span></span><span></span>
-                </div>
-                <div class="metadata">
-                    <span class="prefix">ARCHIVE_FILE:</span>
-                    <h2 id="track-name">STANDBY</h2>
-                </div>
-            </div>
-
-            <div class="access-portal">
+            <div class="controls">
                 <input type="file" id="media-input" accept="audio/*,video/*" hidden>
-                <button id="inject-btn" class="portal-trigger">
-                    <div class="portal-glow"></div>
-                    <span class="trigger-text">INJECT MEDIA</span>
-                </button>
+                <button id="inject-btn">ACCESS VAULT</button>
             </div>
-        </nav>
-
+        </footer>
     </div>
 
-    <div class="lens-dirt"></div>
-    <div class="chromatic-aberration"></div>
-    
+    <div class="noise-overlay"></div>
+    <div class="scanlines"></div>
+
     <audio id="audio-player" crossorigin="anonymous"></audio>
 
     <script src="main.js"></script>
