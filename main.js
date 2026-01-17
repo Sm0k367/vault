@@ -1,67 +1,50 @@
 /**
  * DJ SMOKE STREAM @ AI LOUNGE AFTER DARK
- * SYNAPSE ENGINE v3.0 - Generative Evolution
+ * CORE v4.0 - CHROMA & CINEMA ENGINE
  */
 
 let scene, camera, renderer, analyser, dataArray;
-let currentMesh, material;
-let geometries = [];
-let geoIndex = 0;
-const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+let currentMesh, material, pointLight;
+let hue = 0; // The color starting point
 
-// 1. Scene Setup
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+const videoStage = document.getElementById('video-stage');
+const loungeCanvas = document.getElementById('lounge-canvas');
+const statusOrb = document.querySelector('.status-orb');
+
+// 1. Initialize 3D Environment
 function init() {
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('lounge-canvas'), antialias: true, alpha: true });
+    renderer = new THREE.WebGLRenderer({ canvas: loungeCanvas, antialias: true, alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // Prepare Geometry Archive for Evolution
-    geometries = [
-        new THREE.IcosahedronGeometry(1.5, 15),
-        new THREE.TorusKnotGeometry(1, 0.3, 100, 16),
-        new THREE.OctahedronGeometry(1.8, 2),
-        new THREE.BoxGeometry(2, 2, 2, 10, 10, 10)
-    ];
-
+    // The Evolving Crystal
+    const geometry = new THREE.IcosahedronGeometry(1.5, 12);
     material = new THREE.MeshPhongMaterial({
         color: 0x00f2ff,
         wireframe: true,
-        emissive: 0x9d00ff,
+        emissive: 0x00f2ff,
         emissiveIntensity: 0.5,
         transparent: true,
-        opacity: 0.7
+        opacity: 0.8
     });
 
-    currentMesh = new THREE.Mesh(geometries[0], material);
+    currentMesh = new THREE.Mesh(geometry, material);
     scene.add(currentMesh);
 
-    // Cinematic Lighting
-    const pLight = new THREE.PointLight(0xff00d4, 10, 100);
-    pLight.position.set(5, 5, 5);
-    scene.add(pLight);
-    scene.add(new THREE.AmbientLight(0x202020));
+    // Dynamic Point Light (Matches the Crystal Color)
+    pointLight = new THREE.PointLight(0x00f2ff, 15, 100);
+    pointLight.position.set(5, 5, 5);
+    scene.add(pointLight);
+    scene.add(new THREE.AmbientLight(0x101010));
 
     camera.position.z = 5;
     animate();
 }
 
-// 2. The Evolution Logic (Switching Shapes)
-function evolveVisualizer() {
-    geoIndex = (geoIndex + 1) % geometries.length;
-    
-    // Smooth transition using GSAP
-    gsap.to(currentMesh.rotation, { z: currentMesh.rotation.z + Math.PI, duration: 1 });
-    gsap.to(currentMesh.scale, { x: 0, y: 0, z: 0, duration: 0.5, onComplete: () => {
-        currentMesh.geometry = geometries[geoIndex];
-        gsap.to(currentMesh.scale, { x: 1, y: 1, z: 1, duration: 0.5 });
-    }});
-    
-    document.getElementById('visual-mode').innerText = `EVOLUTION: ${geoIndex + 1}_MORPH`;
-}
-
-// 3. Audio Handling
+// 2. Media Logic & Stage Switching
 const mediaInput = document.getElementById('media-input');
 const injectBtn = document.getElementById('inject-btn');
 const audioPlayer = document.getElementById('audio-player');
@@ -77,70 +60,87 @@ mediaInput.addEventListener('change', (e) => {
     document.getElementById('track-name').innerText = file.name.toUpperCase();
     if (audioContext.state === 'suspended') audioContext.resume();
 
-    // Reset players
+    // Kill previous streams
     audioPlayer.pause();
     videoPlayer.pause();
-    videoPlayer.style.display = 'none';
 
     const isVideo = file.type.includes('video');
-    const player = isVideo ? videoPlayer : audioPlayer;
     
-    player.src = url;
     if (isVideo) {
-        videoPlayer.style.display = 'block';
-        videoPlayer.muted = false;
+        // --- CINEMA MODE ON ---
+        videoStage.style.display = 'flex';
+        loungeCanvas.style.opacity = '0'; // Hide 3D
+        document.getElementById('visual-mode').innerText = "MODE: HD_CINEMA";
+        
+        videoPlayer.src = url;
+        videoPlayer.play();
+        setupAudioAnalysis(videoPlayer);
+    } else {
+        // --- AUDIO MODE ON ---
+        videoStage.style.display = 'none';
+        loungeCanvas.style.opacity = '1'; // Show 3D
+        document.getElementById('visual-mode').innerText = "MODE: NEURAL_CHROMA";
+        
+        audioPlayer.src = url;
+        audioPlayer.play();
+        setupAudioAnalysis(audioPlayer);
     }
-    player.play();
+});
 
-    // Connect analyzer
-    const source = audioContext.createMediaElementSource(player);
+function setupAudioAnalysis(element) {
+    if (analyser) analyser.disconnect();
+    const source = audioContext.createMediaElementSource(element);
     analyser = audioContext.createAnalyser();
     source.connect(analyser);
     analyser.connect(audioContext.destination);
-    analyser.fftSize = 512;
+    analyser.fftSize = 256;
     dataArray = new Uint8Array(analyser.frequencyBinCount);
-});
+}
 
-// 4. Main Loop
-let lastEvolution = 0;
-
+// 3. The Loop (Chroma Shift & Reactive Motion)
 function animate() {
     requestAnimationFrame(animate);
-    
-    currentMesh.rotation.x += 0.003;
-    currentMesh.rotation.y += 0.003;
 
+    // Constant Chroma Shift (Ever-changing Colors)
+    hue = (hue + 0.5) % 360;
+    const colorHex = new THREE.Color(`hsl(${hue}, 100%, 50%)`);
+    const cssColor = `hsl(${hue}, 100%, 50%)`;
+
+    // Update 3D Materials
+    material.color.copy(colorHex);
+    material.emissive.copy(colorHex);
+    pointLight.color.copy(colorHex);
+
+    // Update UI (The Orb and Button Border)
+    statusOrb.style.background = cssColor;
+    statusOrb.style.boxShadow = `0 0 20px ${cssColor}`;
+    injectBtn.style.borderColor = cssColor;
+    injectBtn.style.color = cssColor;
+
+    // React to Audio
     if (analyser) {
         analyser.getByteFrequencyData(dataArray);
-        
-        // Bass sensing (0-20Hz range roughly)
-        const bass = dataArray[2]; 
         const avg = dataArray.reduce((a, b) => a + b) / dataArray.length;
-
-        // Reactive Pulsing
-        const targetScale = 1 + (avg / 100);
-        currentMesh.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
         
-        // Color Shift based on intensity
-        material.emissiveIntensity = avg / 40;
-        if (avg > 100) material.color.setHex(0xff00d4); // Flash Pink on loud parts
-        else material.color.setHex(0x00f2ff);
-
-        // Auto-Evolve on heavy bass drops (cooldown of 3 seconds)
-        if (bass > 220 && Date.now() - lastEvolution > 3000) {
-            evolveVisualizer();
-            lastEvolution = Date.now();
-        }
+        // Pulse the crystal (if visible)
+        const scale = 1 + (avg / 100);
+        currentMesh.scale.set(scale, scale, scale);
+        currentMesh.rotation.y += 0.01 + (avg / 500);
+        
+        // Make the light pulse
+        pointLight.intensity = 10 + (avg / 10);
+    } else {
+        currentMesh.rotation.y += 0.005;
     }
 
     renderer.render(scene, camera);
 }
 
-// Clock & ID Generator
+// UI Telemetry
 setInterval(() => {
-    document.getElementById('clock').innerText = new Date().toTimeString().split(' ')[0];
+    document.getElementById('clock').innerText = new Date().toLocaleTimeString();
 }, 1000);
-document.getElementById('vault-id').innerText = '#' + Math.random().toString(16).substr(2, 4).toUpperCase();
+document.getElementById('vault-id').innerText = '#' + Math.random().toString(16).substr(2, 6).toUpperCase();
 
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
